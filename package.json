@@ -2,7 +2,7 @@
   "name": "Login",
   "version": "1.0.0",
   "description": "",
-  "main": "assets/javascript/index.js",
+  "main": "assets/javascript/login.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
