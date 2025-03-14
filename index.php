@@ -1,4 +1,5 @@
 <?php
+session_start();
 require __DIR__ . '/vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->safeLoad();
@@ -14,6 +15,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
     }
     exit();
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -22,12 +24,13 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ar-Façades</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="assets/CSS/style.css">
 </head>
 <body>
 <div class="container">
     <?php
     if (isset($_SESSION['auth'])) {
+        require "_partials/navbar.php";
         if (isset($_GET['component'])) {
             $componentName = cleanString($_GET['component']);
             if (file_exists("Controller/$componentName.php")) {
