@@ -1,18 +1,44 @@
 body {
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+}
+
+body.with-navbar {
+    display: flex;
+    flex-direction: column;
+}
+
+body.login-page {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #fff;
-    font-family: Arial, sans-serif;
 }
+
+.with-navbar .container {
+    margin-top: 70px;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.login-page .container {
+    margin-top: 0;
+    padding: 0;
+}
+
 .login-container {
     text-align: center;
 }
+
 .logo {
     width: 150px;
     margin-bottom: 20px;
 }
+
 .input-field {
     display: block;
     width: 250px;
@@ -21,6 +47,7 @@ body {
     border: 1px solid #aaa;
     border-radius: 5px;
 }
+
 .login-button {
     background-color: yellow;
     border: none;
@@ -29,6 +56,70 @@ body {
     font-weight: bold;
     cursor: pointer;
 }
+
 .login-button:hover {
     background-color: gold;
 }
+
+
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background-color: black;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+nav a:first-child {
+    margin-left: 0;
+    margin-right: 20px;
+    padding: 0;
+}
+
+nav a:first-child:hover {
+    text-decoration: none;
+}
+
+nav a img {
+    width: 60px;
+    height: auto;
+    margin-left: 30px;
+    margin-right: 40px;
+    vertical-align: middle;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: color 0.3s, border-bottom 0.3s;
+    padding-bottom: 5px;
+}
+
+
+nav a.active {
+    color: white;
+    border-bottom: 2px solid #ffffff;
+}
+
+nav .user {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    color: white;
+}
+
+nav .user i {
+    font-size: 18px;
+    margin-right: 8px;
+    color: white;
+}
+
