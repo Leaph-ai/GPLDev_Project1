@@ -1,11 +1,11 @@
 <form method="post">
     <label for="select-option">Choisissez une option :</label>
     <select id="select-option" name="product-option">
-        <option value="option1">Enduit</option>
-        <option value="option2">Peinture</option>
-        <option value="option3">ITE</option>
-        <option value="option4">Pierre</option>
-        <option value="option5">Colle, joints</option>
+        <option value="Enduit">Enduit</option>
+        <option value="Peinture">Peinture</option>
+        <option value="ITE">ITE</option>
+        <option value="Pierre">Pierre</option>
+        <option value="Colle">Colle, joints</option>
     </select>
 
     <label for="type-input">Type :</label>
