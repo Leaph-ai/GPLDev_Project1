@@ -1,4 +1,8 @@
 <?php
+/**
+ * @var PDO $pdo
+ */
+
 require "Model/users.php";
 
 if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
@@ -30,5 +34,17 @@ $pageData = [
     'currentPage' => $page,
     'totalPages' => $totalPages
 ];
+
+if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
+    $id = (int)$_GET['id'];
+    if ($id === getSessionUserId($pdo) ){
+        $errors[] = "Vous ne pouvez pas supprimer cet utilisateur";
+    } else {
+        deleteUser($pdo, $id);
+        header("Location: index.php?component=users");
+        exit();
+    }
+
+}
 
 require "View/users.php";

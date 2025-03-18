@@ -1,4 +1,8 @@
 <?php
+/**
+ * @var PDO $pdo
+ */
+
 require "Model/products.php";
 
 // Traitement des requêtes AJAX

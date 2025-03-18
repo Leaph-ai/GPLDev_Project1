@@ -55,6 +55,8 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
     } else {
         require 'Controller/login.php';
     }
+
+    require "_partials/errors.php";
     ?>
 </div>
 </body>

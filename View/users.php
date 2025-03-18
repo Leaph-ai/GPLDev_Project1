@@ -24,7 +24,7 @@
                     <a href="index.php?component=user&action=edit&id=<?= $user['id'] ?>" title="Modifier">
                         <i class="fas fa-edit"></i>
                     </a>
-                    <a href="index.php?component=user&action=delete&id=<?= $user['id'] ?>"
+                    <a href="index.php?component=users&action=delete&id=<?= $user['id'] ?>"
                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur?')"
                        title="Supprimer" class="delete-icon">
                         <i class="fas fa-trash-alt"></i>
