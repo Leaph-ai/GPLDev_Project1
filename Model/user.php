@@ -21,6 +21,14 @@ function createUser(PDO $pdo, string $username, string $password, int $admin):vo
     $res->execute();
 }
 
+function getUserInfos(PDO $pdo, int $id): array {
+    $query = "SELECT username, admin FROM `users` WHERE id = :id";
+    $res = $pdo->prepare($query);
+    $res->bindParam(':id', $id);
+    $res->execute();
+    return $res->fetch(PDO::FETCH_ASSOC);
+}
+
 function updateUser(PDO $pdo, int $id, string $username,int $admin):void {
 
     $query = "UPDATE `users` SET username = :username, admin = :admin WHERE id = :id";
