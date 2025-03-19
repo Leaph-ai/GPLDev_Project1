@@ -20,10 +20,16 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
         }
 
         if (is_array($user) && password_verify($pass, $user['password'])) {
-            $_SESSION['auth'] = true;
-            $_SESSION['username'] = $user['username'];
-            echo json_encode(['authentication' => true]);
-            exit();
+            if ($user['admin'] === 1) {
+                $_SESSION['auth'] = true;
+                $_SESSION['username'] = $user['username'];
+                echo json_encode(['authentication' => true]);
+                exit();
+            }
+            else {
+                echo json_encode(['errors' => ['Vous n\'êtes pas un administrateur']]);
+                exit();
+            }
         } else {
             echo json_encode(['errors' => ['L\'identification a échoué']]);
             exit();

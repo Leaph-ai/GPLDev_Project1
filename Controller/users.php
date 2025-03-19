@@ -23,7 +23,7 @@ $users = getUsers($pdo, $page);
 
 $stmt = $pdo->query("SELECT COUNT(*) as total FROM users");
 $totalCount = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
-$limit = 10; // Même limite que dans getUsers()
+$limit = 10;
 $totalPages = ceil($totalCount / $limit);
 
 $pageData = [

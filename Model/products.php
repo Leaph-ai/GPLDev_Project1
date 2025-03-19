@@ -9,3 +9,10 @@ function getProducts($pdo, $page) {
     $res->execute();
     return $res->fetchAll();
 }
+
+function deleteProduct(PDO $pdo, int $id): void {
+    $query = "DELETE FROM `products` WHERE id = :id";
+    $res = $pdo->prepare($query);
+    $res->bindParam(':id', $id);
+    $res->execute();
+}
