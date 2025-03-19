@@ -9,7 +9,6 @@
 
 <script src="./assets/javascript/login.js" type="module"></script>
 <script type="module">
-
     import { login } from './assets/javascript/login.js';
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -24,8 +23,12 @@
             }
 
             const loginResult = await login(formLogin.elements['username'].value, formLogin.elements['password'].value);
-        })
 
-    })
-
+            if (loginResult.authentication === true) {
+                window.location.href = 'index.php';
+            } else if (loginResult.errors) {
+                alert(loginResult.errors.join('\n'));
+            }
+        });
+    });
 </script>

@@ -1,4 +1,8 @@
 <?php
+/**
+ * @var PDO $pdo
+ */
+
 require 'Model/login.php';
 
 if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
