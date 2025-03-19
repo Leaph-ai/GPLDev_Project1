@@ -1,16 +1,16 @@
 <div class="header">
     <h1>Créer un prévisionnel</h1>
-    <p>Produits Utilisateurs Déconnexion Admin</p>
 </div>
 <div class="container">
     <div class="section">
         <button class="button">Importer un PDF</button>
-        <p>Coût Total (HT)</p>
+        <label for="totalCost">Coût Total (HT)</label>
+        <input type="text" name="totalCost" id="totalCost">
     </div>
     <div class="section">
         <div class="section-header">
             <h2>Gestion des produits</h2>
-            <button id="addRowButton" class="button">Ajouter une ligne</button>
+            <button id="addRowButton" class="button">+</button>
         </div>
         <table id="productTable">
             <thead>
@@ -40,10 +40,15 @@
         const tbody = productTable.querySelector("tbody")
         const products = await getProducts()
         addRow.addEventListener("click", () => {
+            let maxId = 1
+            if(tbody.querySelector("tr:last-child")) {
+                maxId = tbody.querySelector("tr:last-child").getAttribute("data-id") + 1
+            }
             const tr = document.createElement("tr")
+            tr.setAttribute("data-id", maxId)
             tr.innerHTML = `
                 <td>
-                    <select class="select-option" name="product-option">
+                    <select class="select-option select-product" name="product-option">
                         <option disabled selected>Choisissez un produit</option>
                         <option value="Enduit">Enduit</option>
                         <option value="Peinture">Peinture</option>
@@ -57,14 +62,25 @@
                         <option disabled selected>Choisissez un type</option>
                     </select>
                 </td>
-                <td><input type="number" name="surface"></td>
-                <td><input type="number" name="quantity"></td>
-                <td><input type="number" name="unitPrice"></td>
-                <td><input type="number" name="total"></td>
-                <td><button class="delete-line-button">Supprimer</button></td>
+                <td><input type="text" name="surface"></td>
+                <td><input type="text" name="quantity"></td>
+                <td><input type="text" name="unitPrice"></td>
+                <td><input type="text" name="total"></td>
+                <td><button type="button" data-id="${maxId}" class="delete-line-button">Supprimer</button></td>
             `
-            tr.querySelector(".select-option").addEventListener("change", (e) => {
-                updateTypeSelect(products, e.target.value, tr.querySelector(".type-select"))
+            const typeSelect = tr.querySelector(".type-select")
+            const deleteLineButton = tr.querySelector(".delete-line-button")
+            tr.querySelector(".select-product").addEventListener("change", (e) => {
+                const selectedProduct = e.target.value
+                updateTypeSelect(products, e.target.value, typeSelect)
+            })
+            typeSelect.addEventListener("change", () => {
+                const product = products.find(product => product.type === typeSelect.value)
+                tr.querySelector("[name='unitPrice']").value = product.unit_price
+            })
+            deleteLineButton.addEventListener('click', (e) => {
+                const trToRemove = e.target.closest("tr")
+                trToRemove.remove()
             })
             tbody.appendChild(tr)
         })
