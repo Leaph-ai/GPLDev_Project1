@@ -3,7 +3,7 @@
         <img src="assets/images/AR+FACADES.png" alt="Logo" class="logo">
         <input id="usernameField" name="username" type="text" class="input-field" placeholder="Nom d’utilisateur">
         <input id="passwordField" name="password" type="password" class="input-field" placeholder="Mot de passe">
-        <button id="loginButton" name="button" class="login-button" >SE CONNECTER</button>
+        <button id="loginButton" name="button" class="login-button button" >SE CONNECTER</button>
     </div>
 </form>
 
@@ -23,7 +23,7 @@
             }
 
             const loginResult = await login(formLogin.elements['username'].value, formLogin.elements['password'].value);
-
+            console.log(loginResult)
             if (loginResult.authentication === true) {
                 window.location.href = 'index.php';
             } else if (loginResult.errors) {

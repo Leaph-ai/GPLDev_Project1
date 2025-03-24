@@ -1,9 +1,8 @@
 <h2>Gestion des produits</h2>
 <a href="index.php?component=product&action=create">
-    <button>Créer un produit</button>
+    <button class="button">Créer un produit</button>
 </a>
 
-<!-- Tableau des produits -->
 <table>
     <thead>
     <tr>

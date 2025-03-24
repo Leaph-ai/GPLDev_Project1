@@ -1,9 +1,8 @@
 <h2>Gestion des utilisateurs</h2>
 <a href="index.php?component=user&action=create">
-    <button>Créer un utilisateur</button>
+    <button class="button">Créer un utilisateur</button>
 </a>
 
-<!-- Tableau des utilisateurs -->
 <table>
     <thead>
     <tr>
@@ -40,7 +39,6 @@
     </tbody>
 </table>
 
-<!-- Pagination -->
 <div class="pagination">
     <?php if (isset($totalPages) && $totalPages > 1): ?>
         <?php if ($page > 1): ?>
@@ -48,7 +46,6 @@
         <?php endif; ?>
 
         <?php
-        // Afficher un nombre limité de pages
         $start = max(1, $page - 2);
         $end = min($totalPages, $page + 2);
 

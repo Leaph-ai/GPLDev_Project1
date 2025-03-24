@@ -10,30 +10,30 @@
 
     <div class="form-container">
         <label for="type-input">Type :</label>
-        <input required type="text" id="type-input" name="type" value="<?php echo(isset($productInfos) && isset($productInfos['type']) ? $productInfos['type'] : ""); ?>">
+        <input class="input-field" required type="text" id="type-input" name="type" value="<?php echo(isset($productInfos) && isset($productInfos['type']) ? $productInfos['type'] : ""); ?>">
     </div>
 
     <div class="form-container">
         <label for="unit-price-input">Prix unitaire :</label>
-        <input required type="text" id="unit-price-input" name="unit-price" value="<?php echo(isset($productInfos) && isset($productInfos['unit_price']) ? $productInfos['unit_price'] : ""); ?>">
+        <input class="input-field" required type="text" id="unit-price-input" name="unit-price" value="<?php echo(isset($productInfos) && isset($productInfos['unit_price']) ? $productInfos['unit_price'] : ""); ?>">
     </div>
 
     <div class="form-container">
         <label for="surface-per-unit-input">Surface par unité :</label>
-        <input required type="text" id="surface-per-unit-input" name="surface-per-unit" value="<?php echo(isset($productInfos) && isset($productInfos['surface_per_unit']) ? $productInfos['surface_per_unit'] : ""); ?>">
+        <input class="input-field" required type="text" id="surface-per-unit-input" name="surface-per-unit" value="<?php echo(isset($productInfos) && isset($productInfos['surface_per_unit']) ? $productInfos['surface_per_unit'] : ""); ?>">
     </div>
 
     <div class="form-container">
         <label for="unit-quantity-input">Quantité unitaire :</label>
-        <input required type="text" id="unit-quantity-input" name="unit-quantity" value="<?php echo(isset($productInfos) && isset($productInfos['unit_quantity']) ? $productInfos['unit_quantity'] : ""); ?>">
+        <input class="input-field" required type="text" id="unit-quantity-input" name="unit-quantity" value="<?php echo(isset($productInfos) && isset($productInfos['unit_quantity']) ? $productInfos['unit_quantity'] : ""); ?>">
     </div>
 
     <div class="form-container">
         <label for="unit-input">Unité(L, kg) :</label>
-        <input required type="text" id="unit-input" name="unit" value="<?php echo(isset($productInfos) && isset($productInfos['unit']) ? $productInfos['unit'] : ""); ?>">
+        <input class="input-field" required type="text" id="unit-input" name="unit" value="<?php echo(isset($productInfos) && isset($productInfos['unit']) ? $productInfos['unit'] : ""); ?>">
     </div>
 
     <div class="form-container">
-        <button name="submit-btn" class="login-button" type="submit"><?php echo(isset($productInfos) ? "Modifier" : "Créer"); ?></button>
+        <button name="submit-btn" class="button" type="submit"><?php echo(isset($productInfos) ? "Modifier" : "Créer"); ?></button>
     </div>
 </form>

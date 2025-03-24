@@ -5,7 +5,7 @@
     <div class="section">
         <button class="button">Importer un PDF</button>
         <label for="totalCost">Coût Total (HT)</label>
-        <input type="text" name="totalCost" id="totalCost">
+        <input type="text" name="totalCost" id="totalCost" class="input-field">
     </div>
     <section>
         <div class="section-header">
@@ -34,16 +34,16 @@
         </div>
         <div class="section-content">
             <label for="prevision-input"></label>
-            <input id="prevision-input" type="text">
+            <input id="prevision-input" class="input-field" type="text">
             <label for="labor-cost"></label>
-            <input id="labor-cost" type="text">
-            <button>Valider</button>
+            <input id="labor-cost" class="input-field" type="text">
+            <button class="button">Valider</button>
         </div>
     </section>
     <section>
         <div class="section-header">
             <h2>Gestions des divers</h2>
-            <button id="add-divers-row">+</button>
+            <button class="button" id="add-divers-row">+</button>
         </div>
         <div class="section-content">
             <table id="divers-table">
@@ -94,10 +94,10 @@
                         <option disabled selected>Choisissez un type</option>
                     </select>
                 </td>
-                <td><input type="text" name="surface"></td>
-                <td><input type="text" name="quantity"></td>
-                <td><input type="text" name="unitPrice"></td>
-                <td><input type="text" name="total"></td>
+                <td><input type="text" class="input-field" name="surface"></td>
+                <td><input type="text" class="input-field" name="quantity"></td>
+                <td><input type="text" class="input-field" name="unitPrice"></td>
+                <td><input type="text" class="input-field" name="total"></td>
                 <td><button type="button" data-id="${maxId}" class="delete-line-button">Supprimer</button></td>
             `
             const typeSelect = tr.querySelector(".type-select")
@@ -123,8 +123,8 @@
             }
             const tr = document.createElement("tr")
             tr.innerHTML = `
-                <td><input type="text" class="divers-name"></td>
-                <td><input type="text" class="divers-cost"></td>
+                <td><input type="text"  class="divers-name input-field"></td>
+                <td><input type="text" class="divers-cost input-field"></td>
                 <td><button type="button" class="delete-line-button">Supprimer</button></td>
             `
             const deleteLineButton = tr.querySelector(".delete-line-button")
