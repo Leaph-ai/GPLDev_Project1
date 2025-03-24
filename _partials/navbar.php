@@ -12,5 +12,5 @@ $current_page = $_GET['component'] ?? '';
     <a href="index.php?disconnect=true">Déconnexion</a>
     <div class="user">
         <i class="fa-solid fa-user me-2"></i><?php echo $_SESSION['username']; ?>
-    </div>
+    </div> 
 </nav>
