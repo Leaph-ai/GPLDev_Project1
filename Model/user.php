@@ -21,8 +21,8 @@ function createUser(PDO $pdo, string $username, string $password, int $admin):vo
     $res->execute();
 }
 
-function getUserById(PDO $pdo, int $id):array {
-    $query = "SELECT * FROM `users` where id = :id";
+function getUserInfos(PDO $pdo, int $id): array {
+    $query = "SELECT username, admin FROM `users` WHERE id = :id";
     $res = $pdo->prepare($query);
     $res->bindParam(':id', $id);
     $res->execute();

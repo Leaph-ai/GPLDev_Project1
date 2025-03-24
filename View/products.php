@@ -32,7 +32,7 @@
                     <a href="index.php?component=product&action=edit&id=<?= $product['id'] ?>" title="Modifier">
                         <i class="fas fa-edit"></i>
                     </a>
-                    <a href="index.php?component=product&action=delete&id=<?= $product['id'] ?>"
+                    <a href="index.php?component=products&action=delete&id=<?= $product['id'] ?>"
                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit?')"
                        title="Supprimer" class="delete-icon">
                         <i class="fas fa-trash-alt"></i>

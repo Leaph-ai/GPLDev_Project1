@@ -1,27 +1,39 @@
-<form method="post">
+<form method="post" id="productForm">
     <label for="select-option">Choisissez une option :</label>
     <select id="select-option" name="product-option">
-        <option value="Enduit">Enduit</option>
-        <option value="Peinture">Peinture</option>
-        <option value="ITE">ITE</option>
-        <option value="Pierre">Pierre</option>
-        <option value="Colle">Colle, joints</option>
+        <option value="Enduit" <?php echo(isset($productInfos) && $productInfos['product'] === "Enduit" ? "selected" : ""); ?>>Enduit</option>
+        <option value="Peinture" <?php echo(isset($productInfos) && $productInfos['product'] === "Peinture" ? "selected" : ""); ?>>Peinture</option>
+        <option value="ITE" <?php echo(isset($productInfos) && $productInfos['product'] === "ITE" ? "selected" : ""); ?>>ITE</option>
+        <option value="Pierre" <?php echo(isset($productInfos) && $productInfos['product'] === "Pierre" ? "selected" : ""); ?>>Pierre</option>
+        <option value="Colle" <?php echo(isset($productInfos) && $productInfos['product'] === "Colle" ? "selected" : ""); ?>>Colle, joints</option>
     </select>
 
-    <label for="type-input">Type :</label>
-    <input required type="text" id="type-input" name="type">
+    <div class="form-container">
+        <label for="type-input">Type :</label>
+        <input required type="text" id="type-input" name="type" value="<?php echo(isset($productInfos) && isset($productInfos['type']) ? $productInfos['type'] : ""); ?>">
+    </div>
 
-    <label for="unit-price-input">Prix unitaire :</label>
-    <input required type="text" id="unit-price-input" name="unit-price">
+    <div class="form-container">
+        <label for="unit-price-input">Prix unitaire :</label>
+        <input required type="text" id="unit-price-input" name="unit-price" value="<?php echo(isset($productInfos) && isset($productInfos['unit_price']) ? $productInfos['unit_price'] : ""); ?>">
+    </div>
 
-    <label for="surface-per-unit-input">Surface par unité :</label>
-    <input required type="text" id="surface-per-unit-input" name="surface-per-unit">
+    <div class="form-container">
+        <label for="surface-per-unit-input">Surface par unité :</label>
+        <input required type="text" id="surface-per-unit-input" name="surface-per-unit" value="<?php echo(isset($productInfos) && isset($productInfos['surface_per_unit']) ? $productInfos['surface_per_unit'] : ""); ?>">
+    </div>
 
-    <label for="unit-quantity-input">Quantité unitaire :</label>
-    <input required type="text" id="unit-quantity-input" name="unit-quantity">
+    <div class="form-container">
+        <label for="unit-quantity-input">Quantité unitaire :</label>
+        <input required type="text" id="unit-quantity-input" name="unit-quantity" value="<?php echo(isset($productInfos) && isset($productInfos['unit_quantity']) ? $productInfos['unit_quantity'] : ""); ?>">
+    </div>
 
-    <label for="unit-input">Unité(L, kg) :</label>
-    <input required type="text" id="unit-input" name="unit">
+    <div class="form-container">
+        <label for="unit-input">Unité(L, kg) :</label>
+        <input required type="text" id="unit-input" name="unit" value="<?php echo(isset($productInfos) && isset($productInfos['unit']) ? $productInfos['unit'] : ""); ?>">
+    </div>
 
-    <button name="submit-btn" type="submit">Envoyer</button>
+    <div class="form-container">
+        <button name="submit-btn" class="login-button" type="submit"><?php echo(isset($productInfos) ? "Modifier" : "Créer"); ?></button>
+    </div>
 </form>

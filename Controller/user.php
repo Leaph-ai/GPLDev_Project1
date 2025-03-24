@@ -5,6 +5,10 @@
 
 require "Model/user.php";
 
+if (isset($_GET["action"]) && $_GET["action"] === "edit") {
+    $user = getUserInfos($pdo, $_GET["id"]);
+}
+
 if(getSessionUserId($pdo)['id'] == $_GET['id']) {
     header("Location: index.php?component=users");
     $errors[] = "Vous ne pouvez pas modifier votre propre compte";

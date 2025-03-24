@@ -22,7 +22,7 @@ $products = getProducts($pdo, $page);
 
 $stmt = $pdo->query("SELECT COUNT(*) as total FROM products");
 $totalCount = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
-$limit = 10; // Même limite que dans getProducts()
+$limit = 10;
 $totalPages = ceil($totalCount / $limit);
 
 $pageData = [
@@ -30,5 +30,12 @@ $pageData = [
     'currentPage' => $page,
     'totalPages' => $totalPages
 ];
+
+if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
+    $id = (int)$_GET['id'];
+    deleteProduct($pdo, $id);
+    header("Location: index.php?component=products");
+    exit();
+}
 
 require "View/products.php";

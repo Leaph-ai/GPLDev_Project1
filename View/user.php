@@ -8,5 +8,5 @@
         <input id="adminCheckBox" name="adminCheckBox" type="checkbox" <?php echo(isset($user) && $user['admin'] === 1 ? "checked" : ""); ?>>
     </div>
     <br>
-    <button id="loginButton" name="button" class="login-button" type="submit" ><?php echo(isset($user) && $_GET['action'] === 'edit' ? 'Modifier l\'utilisateur' : "Créer un utilisateur"); ?> </button>
+    <button name="button" class="login-button" type="submit" ><?php echo(isset($user) && $_GET['action'] === 'edit' ? 'Modifier l\'utilisateur' : "Créer un utilisateur"); ?> </button>
 </form>
