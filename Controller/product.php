@@ -1,4 +1,8 @@
 <?php
+/**
+ * @var PDO $pdo
+ */
+
 require "Model/product.php";
 
 if (isset($_POST["submit-btn"])) {
