@@ -6,7 +6,7 @@ $current_page = $_GET['component'] ?? '';
     <a href="index.php">
         <img src="assets/images/AR+FACADES.png" alt="Logo">
     </a>
-    <a href="index.php?component=previsionnel" class="<?= ($current_page == 'previsionnel') ? 'active' : '' ?>">+ Créer un prévisionnel</a>
+    <a href="index.php?component=previ" class="<?= ($current_page == 'previ') ? 'active' : '' ?>">+ Créer un prévisionnel</a>
     <a href="index.php?component=products" class="<?= ($current_page == 'products') ? 'active' : '' ?>">Produits</a>
     <a href="index.php?component=users" class="<?= ($current_page == 'users') ? 'active' : '' ?>">Utilisateurs</a>
     <a href="index.php?disconnect=true">Déconnexion</a>
