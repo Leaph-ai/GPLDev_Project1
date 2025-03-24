@@ -21,6 +21,7 @@ if (isset($_POST["submit-btn"])) {
     if ($_GET["action"] === "create") {
         if (!productExists($pdo, $product, $type)) {
             createProduct($pdo, $product, $type, $unitPrice, $surfacePerUnit, $unitQuantity, $unit);
+            header("Location: index.php?component=products");
         }
         else {
             $errors[] = "Produit déjà existant";
