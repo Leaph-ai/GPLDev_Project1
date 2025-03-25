@@ -32,6 +32,10 @@ body.login-page {
 
 .login-container {
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .logo {
@@ -40,7 +44,6 @@ body.login-page {
 }
 
 .input-field {
-    display: block;
     width: 250px;
     padding: 10px;
     margin: 10px auto;
@@ -194,3 +197,34 @@ th {
     background-color: #f2f2f2;
 }
 
+#userForm {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#productForm {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 80px;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px !important;
+}
+
+.button {
+    background-color: yellow;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}

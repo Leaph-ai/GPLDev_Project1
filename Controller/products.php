@@ -1,7 +1,10 @@
 <?php
+/**
+ * @var PDO $pdo
+ */
+
 require "Model/products.php";
 
-// Traitement des requêtes AJAX
 if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
     header('Content-Type: application/json');
     if (isset($_GET["action"]) && $_GET["action"] == "index") {
@@ -12,25 +15,27 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQ
     }
 }
 
-// Pour les requêtes normales (non-AJAX)
-// Récupérer le numéro de page depuis l'URL
 $page = isset($_GET["page"]) ? (int)$_GET["page"] : 1;
 if ($page < 1) $page = 1;
 
-// Récupérer les produits pour la page actuelle
 $products = getProducts($pdo, $page);
 
-// Récupérer le nombre total de produits pour calculer la pagination
 $stmt = $pdo->query("SELECT COUNT(*) as total FROM products");
 $totalCount = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
-$limit = 10; // Même limite que dans getProducts()
+$limit = 10;
 $totalPages = ceil($totalCount / $limit);
 
-// Passer les variables à la vue
 $pageData = [
     'products' => $products,
     'currentPage' => $page,
     'totalPages' => $totalPages
 ];
+
+if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
+    $id = (int)$_GET['id'];
+    deleteProduct($pdo, $id);
+    header("Location: index.php?component=products");
+    exit();
+}
 
 require "View/products.php";

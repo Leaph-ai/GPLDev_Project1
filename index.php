@@ -8,13 +8,8 @@ require "Includes/functions.php";
 
 // Gérer la déconnexion
 if (isset($_GET['disconnect']) && $_GET['disconnect'] == 'true') {
-    // Détruire toutes les variables de session
     $_SESSION = array();
-
-    // Détruire la session
     session_destroy();
-
-    // Rediriger vers la page d'accueil
     header("Location: index.php");
     exit();
 }
@@ -29,7 +24,6 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
     }
     exit();
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -55,6 +49,8 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
     } else {
         require 'Controller/login.php';
     }
+
+    require "_partials/errors.php";
     ?>
 </div>
 </body>

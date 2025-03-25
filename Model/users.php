@@ -9,3 +9,18 @@ function getUsers($pdo, $page) {
     $res->execute();
     return $res->fetchAll();
 }
+
+function deleteUser(PDO $pdo, int $id): void {
+    $query = "DELETE FROM `users` WHERE id = :id";
+    $res = $pdo->prepare($query);
+    $res->bindParam(':id', $id);
+    $res->execute();
+}
+
+function getSessionUserId(PDO $pdo): int {
+    $query = "SELECT id FROM `users` WHERE username = :username";
+    $res = $pdo->prepare($query);
+    $res->bindParam(':username', $_SESSION['username']);
+    $res->execute();
+    return $res->fetch()['id'];
+}
