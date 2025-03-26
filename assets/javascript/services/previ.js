@@ -5,20 +5,18 @@ export const getProducts = async () => {
 }
 
 export function generatePDF() {
-    // Utilisation de la version CDN de jsPDF
     const doc = new jspdf.jsPDF();
 
-    // Ajout du titre
     doc.setFontSize(18);
     doc.text('Prévisionnel', 105, 15, { align: 'center' });
 
-    // Récupération des données
+    let metadata = "";
+
     const totalCost = document.getElementById('totalCost').value;
     doc.setFontSize(12);
     doc.text(`Coût Total (HT): ${totalCost}`, 20, 30);
 
-    // Tableau des produits
-    let yPos = 40;
+    let yPos = 50;
     doc.text('Liste des produits:', 20, yPos);
     yPos += 10;
 
@@ -30,19 +28,18 @@ export function generatePDF() {
                 const type = row.querySelector('[name="type-option"], .type-select') ? row.querySelector('[name="type-option"], .type-select').value : 'N/A';
                 const surface = row.querySelector('[name="surface"]') ? row.querySelector('[name="surface"]').value : 'N/A';
 
-                // Chercher les entrées par leur nom ou classe au lieu de position
                 const quantityInput = row.querySelector('[name="quantity"], .quantity');
-                const priceInput = row.querySelector('[name="price"], .price');
+                const priceInput = row.querySelector('[name="unitPrice"], .price');
+
+                const totalCost = row.querySelector('[name="total"], .total').value;
 
                 const quantity = quantityInput ? quantityInput.value : 'N/A';
 
-                //prix a calculer ?? ou retirer
                 const price = priceInput ? priceInput.value : 'N/A';
 
-                doc.text(`${index + 1}. Produit: ${product}, Type: ${type}, Surface: ${surface}, Quantité: ${quantity}, Prix: ${price}`, 20, yPos);
+                doc.text(`${index + 1}. Produit: ${product}, Type: ${type}, Surface: ${surface}, Quantité: ${quantity}, Prix Unitaire: ${price}, Total: ${totalCost}`, 20, yPos);
                 yPos += 8;
 
-                // Éviter le débordement de page
                 if (yPos > 280) {
                     doc.addPage();
                     yPos = 20;
@@ -57,14 +54,11 @@ export function generatePDF() {
         doc.text('Aucun produit ajouté', 20, yPos);
     }
 
-    // Vérifier si des données ont été entrées pour les équipes
     const previsionInput = document.getElementById('prevision-input').value;
     const laborCost = document.getElementById('labor-cost').value;
 
-    // N'ajouter la section équipes que si au moins un des champs est rempli
     if (previsionInput.trim() !== '' || laborCost.trim() !== '') {
         yPos += 15;
-        // Éviter le débordement de page
         if (yPos > 280) {
             doc.addPage();
             yPos = 20;
@@ -81,21 +75,14 @@ export function generatePDF() {
         }
     }
 
-    // Vérifier si des données ont été entrées pour les divers
     const diversRows = document.querySelectorAll('#divers-tbody tr');
     if (diversRows.length > 0) {
-        // Vérifier si au moins une ligne a des données
         let hasDiversData = false;
 
 
         diversRows.forEach(row => {
-            // Utiliser plusieurs stratégies pour sélectionner les éléments
-            const nomInput = row.querySelector('input[name="nom-divers"]') || row.querySelector('.nom-divers') || row.cells[0].querySelector('input');
-            const coutInput = row.querySelector('input[name="cout-divers"]') || row.querySelector('.cout-divers') || row.cells[1].querySelector('input');
-
-            // Debugging - vérifier si les inputs sont trouvés
-            console.log("Input nom trouvé:", !!nomInput);
-            console.log("Input coût trouvé:", !!coutInput);
+            const nomInput = row.querySelector('input[name="divers-name"]') || row.querySelector('.divers-name') || row.cells[0].querySelector('input');
+            const coutInput = row.querySelector('input[name="divers-count"]') || row.querySelector('.divers-count') || row.cells[1].querySelector('input');
 
             if ((nomInput && nomInput.value.trim() !== '') || (coutInput && coutInput.value.trim() !== '')) {
                 hasDiversData = true;
@@ -104,20 +91,17 @@ export function generatePDF() {
 
         if (hasDiversData) {
             yPos += 15;
-            // evite le débordement de page
             if (yPos > 280) {
                 doc.addPage();
                 yPos = 20;
             }
 
-            // titre de la section divers
             doc.text('Gestions des divers:', 20, yPos);
             yPos += 8;
 
-            // Ajouter chaque entrée divers
             diversRows.forEach((row, index) => {
-                const nomInput = row.querySelector('input[name="nom-divers"]') || row.querySelector('.nom-divers') || row.cells[0].querySelector('input');
-                const coutInput = row.querySelector('input[name="cout-divers"]') || row.querySelector('.cout-divers') || row.cells[1].querySelector('input');
+                const nomInput = row.querySelector('input.divers-name') || row.querySelector('.divers-name') || row.cells[0].querySelector('input');
+                const coutInput = row.querySelector('input.divers-cost') || row.querySelector('.divers-cost') || row.cells[1].querySelector('input');
 
                 if (nomInput || coutInput) {
                     const nom = nomInput && nomInput.value.trim() !== '' ? nomInput.value : 'N/A';
@@ -126,7 +110,6 @@ export function generatePDF() {
                     doc.text(`${index + 1}. Nom: ${nom}, Coût: ${cout}`, 20, yPos);
                     yPos += 8;
 
-                    // Éviter le débordement de page
                     if (yPos > 280) {
                         doc.addPage();
                         yPos = 20;
@@ -136,8 +119,29 @@ export function generatePDF() {
         }
     }
 
+    doc.setProperties({
+        title: "Prévisionnel",
+        subject: JSON.stringify({
+            totalCost,
+            products: Array.from(productRows).map(row => ({
+                product: row.querySelector('.select-product')?.value || 'N/A',
+                type: row.querySelector('[name="type-option"], .type-select')?.value || 'N/A',
+                surface: row.querySelector('[name="surface"]')?.value || 'N/A',
+                quantity: row.querySelector('[name="quantity"], .quantity')?.value || 'N/A',
+                price: row.querySelector('[name="unitPrice"], .price')?.value || 'N/A',
+                totalprice: row.querySelector('[name="total"]')?.value || 'N/A'
+            })),
+            team: {
+                prevision: previsionInput,
+                laborCost
+            },
+            divers: Array.from(document.querySelectorAll('#divers-tbody tr')).map(row => ({
+                name: row.querySelector('input.divers-name')?.value || 'N/A',
+                count: row.querySelector('input.divers-cost')?.value || 'N/A'
+            }))
+        })
+    });
 
-    // Sauvegarder le PDF
     doc.save('previsionnel.pdf');
 }
 
