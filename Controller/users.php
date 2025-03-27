@@ -1,4 +1,9 @@
 <?php
+
+/**
+ * @var PDO $pdo
+ */
+
 require "Model/users.php";
 
 if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
@@ -11,24 +16,32 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQ
     }
 }
 
-// Pour les requêtes normales (non-AJAX)
 $page = isset($_GET["page"]) ? (int)$_GET["page"] : 1;
 if ($page < 1) $page = 1;
 
-// Récupérer les utilisateurs pour la page actuelle
 $users = getUsers($pdo, $page);
 
-// Récupérer le nombre total d'utilisateurs pour calculer la pagination
 $stmt = $pdo->query("SELECT COUNT(*) as total FROM users");
 $totalCount = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
-$limit = 10; // Même limite que dans getUsers()
+$limit = 10;
 $totalPages = ceil($totalCount / $limit);
 
-// Passer les variables à la vue
 $pageData = [
     'users' => $users,
     'currentPage' => $page,
     'totalPages' => $totalPages
 ];
+
+if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
+    $id = (int)$_GET['id'];
+    if ($id === getSessionUserId($pdo) ){
+        $errors[] = "Vous ne pouvez pas supprimer cet utilisateur";
+    } else {
+        deleteUser($pdo, $id);
+        header("Location: index.php?component=users");
+        exit();
+    }
+
+}
 
 require "View/users.php";
