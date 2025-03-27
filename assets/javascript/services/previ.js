@@ -118,11 +118,11 @@ export function generatePDF() {
 
     const benefit = totalCost - totalCharges;
 
-    doc.text(`Coût Total (HT): ${totalCost.toFixed(2)}`, margin, currentY);
+    doc.text(`Coût Total (HT): ${totalCost.toFixed(2)}€`, margin, currentY);
     currentY += lineHeight;
-    doc.text(`Charges Totales: ${totalCharges.toFixed(2)}`, margin, currentY);
+    doc.text(`Charges Totales: ${totalCharges.toFixed(2)}€`, margin, currentY);
     currentY += lineHeight;
-    doc.text(`Bénéfice: ${benefit.toFixed(2)}`, margin, currentY);
+    doc.text(`Bénéfice: ${benefit.toFixed(2)}€`, margin, currentY);
     currentY += lineHeight + 5;
 
     checkForNewPage(headingFontSize + lineHeight * 2);
