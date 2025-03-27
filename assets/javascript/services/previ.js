@@ -17,29 +17,56 @@ export function generatePDF() {
     const logoMaxWidth = 20;
     const logoMaxHeight = 20;
 
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const maxContentHeight = pageHeight - margin * 2;
+
+    const addFooter = (pageNum, totalPages) => {
+        doc.setFillColor(primaryColor);
+        doc.rect(margin, pageHeight - margin - 5, pageWidth - 2 * margin, 1, 'F');
+
+        doc.setFontSize(fontSize - 2);
+        doc.setTextColor(secondaryColor);
+        doc.text(`Page ${pageNum} / ${totalPages}`, margin, pageHeight - margin + 2);
+
+        const generationDate = new Date().toLocaleDateString('fr-FR');
+        doc.text(`Généré le ${generationDate}`, pageWidth - margin, pageHeight - margin + 2, { align: 'right' });
+    };
+
+    const checkForNewPage = (heightNeeded) => {
+        if (currentY + heightNeeded > pageHeight - margin - 10) {
+            doc.addPage();
+            currentY = margin + 10;
+
+            doc.setFontSize(fontSize);
+            doc.setTextColor(secondaryColor);
+            const companyName = document.getElementById('companyName').value || 'Sans nom';
+            doc.text(`Prévisionnel ${companyName} (suite)`, doc.internal.pageSize.getWidth() / 2, margin, { align: 'center' });
+            doc.setFillColor(secondaryColor);
+            doc.rect(margin, margin + 5, doc.internal.pageSize.getWidth() - 2 * margin, 0.5, 'F');
+            currentY = margin + 15;
+
+            return true;
+        }
+        return false;
+    };
 
     const companyName = document.getElementById('companyName').value || 'Sans nom';
-
     const limitDate = document.getElementById('limit_date').value || 'Non spécifié';
-
 
     const titleX = doc.internal.pageSize.getWidth() / 2;
     const titleY = margin + 10;
-
 
     const logoUrl = 'assets/images/AR+FACADES.png';
 
     try {
         doc.addImage(logoUrl, 'PNG', margin, margin, logoMaxWidth, logoMaxHeight);
-
         const titleX = margin + logoMaxWidth + 10;
         const titleY = margin + logoMaxHeight / 2;
     } catch (error) {
         const titleX = doc.internal.pageSize.getWidth() / 2;
         const titleY = margin + 10;
     }
-
-
 
     doc.setFontSize(titleFontSize);
     doc.setTextColor(0, 0, 0);
@@ -56,11 +83,13 @@ export function generatePDF() {
     doc.text(`Date de validité du devis: ${limitDate}`, margin, currentY);
     currentY += lineHeight + 5;
 
+    checkForNewPage(headingFontSize + lineHeight * 5);
+
     doc.setFontSize(headingFontSize);
     doc.setTextColor(secondaryColor);
-    doc.text('Récapitulatif Financier', margin, currentY);
+    doc.text('Récapitulatif Financier :', margin, currentY);
     doc.setFillColor(secondaryColor);
-    doc.rect(margin, currentY + 2, doc.getTextWidth('Récapitulatif Financier'), 0.5, 'F');
+    doc.rect(margin, currentY + 2, doc.getTextWidth('Récapitulatif Financier :'), 0.5, 'F');
     currentY += lineHeight + 5;
 
     doc.setFontSize(fontSize);
@@ -96,12 +125,13 @@ export function generatePDF() {
     doc.text(`Bénéfice: ${benefit.toFixed(2)}`, margin, currentY);
     currentY += lineHeight + 5;
 
+    checkForNewPage(headingFontSize + lineHeight * 2);
 
     doc.setFontSize(headingFontSize);
     doc.setTextColor(secondaryColor);
-    doc.text('Détail des Produits', margin, currentY);
+    doc.text('Détail des Produits :', margin, currentY);
     doc.setFillColor(secondaryColor);
-    doc.rect(margin, currentY + 2, doc.getTextWidth('Détail des Produits'), 0.5, 'F');
+    doc.rect(margin, currentY + 2, doc.getTextWidth('Détail des Produits :'), 0.5, 'F');
     currentY += lineHeight + 2;
 
     doc.setFontSize(fontSize);
@@ -109,108 +139,88 @@ export function generatePDF() {
 
     if (productRows.length > 0) {
         productRows.forEach((row, index) => {
+            if (checkForNewPage(lineHeight * 2)) {
+            }
+
             try {
                 const product = row.querySelector('.select-product') ? row.querySelector('.select-product').value : 'N/A';
                 const type = row.querySelector('[name="type-option"], .type-select') ? row.querySelector('[name="type-option"], .type-select').value : 'N/A';
                 const surface = row.querySelector('[name="surface"]') ? row.querySelector('[name="surface"]').value : 'N/A';
-                const quantityInput = row.querySelector('[name="quantity"], .quantity');
-                const priceInput = row.querySelector('[name="unitPrice"], .price');
-                const totalCostProduct = row.querySelector('[name="total"], .total').value;
-                const quantity = quantityInput ? quantityInput.value : 'N/A';
-                const price = priceInput ? priceInput.value : 'N/A';
+                const quantity = row.querySelector('[name="quantity"]') ? row.querySelector('[name="quantity"]').value : 'N/A';
+                const unitPrice = row.querySelector('[name="unitPrice"]') ? row.querySelector('[name="unitPrice"]').value : 'N/A';
+                const total = row.querySelector('[name="total"]') ? row.querySelector('[name="total"]').value : 'N/A';
 
-                doc.text(`${index + 1}. Produit: ${product}, Type: ${type}, Surface: ${surface}m², Quantité: ${quantity}, Prix Unitaire: ${price}€, Total: ${totalCostProduct}€`, margin, currentY);
-                currentY += lineHeight*2;
-
-                if (currentY > doc.internal.pageSize.getHeight() - margin) {
-                    doc.addPage();
-                    currentY = margin;
-                }
+                doc.text(`${index + 1}. ${product} (${type}) - Surface: ${surface}m², Qté: ${quantity}, Prix: ${unitPrice}€/m², Total: ${total}€`, margin, currentY);
+                currentY += lineHeight;
             } catch (error) {
-                console.error("Erreur lors de l'extraction des données de la ligne:", error);
-                doc.text(`${index + 1}. Erreur lors de l'extraction des données`, margin, currentY);
+                console.error('Erreur lors de l\'ajout d\'un produit au PDF:', error);
+                doc.text(`${index + 1}. Erreur dans les données du produit`, margin, currentY);
                 currentY += lineHeight;
             }
         });
     } else {
-        doc.text('Aucun produit ajouté', margin, currentY);
+        doc.text('Aucun produit ajouté.', margin, currentY);
         currentY += lineHeight;
     }
-    currentY += 5;
 
-    const previsionInput = document.getElementById('prevision-input').value;
-    laborCost = document.getElementById('labor-cost').value;
+    currentY += lineHeight;
 
-    if (previsionInput.trim() !== '' || laborCost.trim() !== '') {
+    checkForNewPage(headingFontSize + lineHeight * 3);
+
+    doc.setFontSize(headingFontSize);
+    doc.setTextColor(secondaryColor);
+    doc.text('Main d\'Œuvre :', margin, currentY);
+    doc.setFillColor(secondaryColor);
+    doc.rect(margin, currentY + 2, doc.getTextWidth('Main d\'Œuvre :'), 0.5, 'F');
+    currentY += lineHeight + 2;
+
+    doc.setFontSize(fontSize);
+    doc.setTextColor('#333');
+
+    const previsionInput = document.getElementById('prevision-input').value || 'Non spécifié';
+    doc.text(`Nombre d'équipes: ${previsionInput}`, margin, currentY);
+    currentY += lineHeight;
+    doc.text(`Coût de la main d'œuvre: ${laborCost.toFixed(2)}€`, margin, currentY);
+    currentY += lineHeight + 5;
+
+    if (diversRows.length > 0) {
+        checkForNewPage(headingFontSize + lineHeight * 2);
+
         doc.setFontSize(headingFontSize);
         doc.setTextColor(secondaryColor);
-        doc.text('Gestion des Équipes', margin, currentY);
+        doc.text('Détail des Divers :', margin, currentY);
         doc.setFillColor(secondaryColor);
-        doc.rect(margin, currentY + 2, doc.getTextWidth('Gestion des Équipes'), 0.5, 'F');
+        doc.rect(margin, currentY + 2, doc.getTextWidth('Détail des Divers :'), 0.5, 'F');
         currentY += lineHeight + 2;
 
         doc.setFontSize(fontSize);
         doc.setTextColor('#333');
-        if (previsionInput.trim() !== '') {
-            doc.text(`Prévision: ${previsionInput}`, margin, currentY);
-            currentY += lineHeight;
-        }
-        if (laborCost.trim() !== '') {
-            doc.text(`Coût de main d'œuvre: ${laborCost}`, margin, currentY);
-            currentY += lineHeight;
-        }
-        currentY += 5;
-    }
 
-    if (diversRows.length > 0) {
-        let hasDiversData = false;
+        diversRows.forEach((row, index) => {
+            if (checkForNewPage(lineHeight * 2)) {
+            }
 
-        diversRows.forEach(row => {
-            const nomInput = row.querySelector('input[name="divers-name"]') || row.querySelector('.divers-name') || row.cells[0].querySelector('input');
-            const coutInput = row.querySelector('input[name="divers-count"]') || row.querySelector('.divers-count') || row.cells[1].querySelector('input');
+            try {
+                const name = row.querySelector('.divers-name') ? row.querySelector('.divers-name').value : 'N/A';
+                const cost = row.querySelector('.divers-cost') ? row.querySelector('.divers-cost').value : 'N/A';
 
-            if ((nomInput && nomInput.value.trim() !== '') || (coutInput && coutInput.value.trim() !== '')) {
-                hasDiversData = true;
+                doc.text(`${index + 1}. ${name}: ${cost}€`, margin, currentY);
+                currentY += lineHeight;
+            } catch (error) {
+                console.error('Erreur lors de l\'ajout d\'un élément divers au PDF:', error);
+                doc.text(`${index + 1}. Erreur dans les données de l'élément divers`, margin, currentY);
+                currentY += lineHeight;
             }
         });
-
-        if (hasDiversData) {
-            doc.setFontSize(headingFontSize);
-            doc.setTextColor(secondaryColor);
-            doc.text('Gestion des Divers', margin, currentY);
-            doc.setFillColor(secondaryColor);
-            doc.rect(margin, currentY + 2, doc.getTextWidth('Gestion des Divers'), 0.5, 'F');
-            currentY += lineHeight + 2;
-
-            doc.setFontSize(fontSize);
-            doc.setTextColor('#333');
-            diversRows.forEach((row, index) => {
-                const nomInput = row.querySelector('input.divers-name') || row.querySelector('.divers-name') || row.cells[0].querySelector('input');
-                const coutInput = row.querySelector('input.divers-cost') || row.querySelector('.divers-cost') || row.cells[1].querySelector('input');
-
-                if (nomInput || coutInput) {
-                    const nom = nomInput && nomInput.value.trim() !== '' ? nomInput.value : 'N/A';
-                    const cout = coutInput && coutInput.value.trim() !== '' ? coutInput.value : 'N/A';
-
-                    doc.text(`${index + 1}. Nom: ${nom}, Coût: ${cout}`, margin, currentY);
-                    currentY += lineHeight;
-
-                    if (currentY > doc.internal.pageSize.getHeight() - margin) {
-                        doc.addPage();
-                        currentY = margin;
-                    }
-                }
-            });
-        }
     }
 
-    doc.setFillColor(primaryColor);
-    doc.rect(margin, doc.internal.pageSize.getHeight() - margin - 5, doc.internal.pageSize.getWidth() - 2 * margin, 1, 'F');
+    const totalPages = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= totalPages; i++) {
+        doc.setPage(i);
+        addFooter(i, totalPages);
+    }
 
-    doc.setFontSize(fontSize - 2);
-    doc.setTextColor(secondaryColor);
-    const generationDate = new Date().toLocaleDateString('fr-FR');
-    doc.text(`Généré le ${generationDate}`, doc.internal.pageSize.getWidth() - margin, doc.internal.pageSize.getHeight() - margin + 2, { align: 'right' });
+
 
 
     doc.setProperties({
@@ -240,6 +250,6 @@ export function generatePDF() {
         })
     });
 
-    doc.save(`Previsionnel_${companyName}.pdf`);
+    doc.save(`Prévisionnel_${companyName}_${new Date().toLocaleDateString().replace(/\//g, '-')}.pdf`);
 
 }
