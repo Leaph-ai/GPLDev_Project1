@@ -46,6 +46,9 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
                 require "Controller/$componentName.php";
             }
         }
+        else {
+            require "Controller/previ.php";
+        }
     } else {
         require 'Controller/login.php';
     }
