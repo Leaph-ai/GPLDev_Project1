@@ -144,4 +144,3 @@ export function generatePDF() {
 
     doc.save('previsionnel.pdf');
 }
-

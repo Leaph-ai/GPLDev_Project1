@@ -58,8 +58,6 @@
                 <tbody id="divers-tbody">
                 </tbody>
             </table>
-
-
         </div>
     </section>
 </div>
@@ -72,6 +70,13 @@
 <script type="module" src="./assets/javascript/components/previ.js"></script>
 <script type="module">
     import {getProducts, generatePDF} from "./assets/javascript/services/previ.js"
+        </div>
+    </section>
+</div>
+<script type="module" src="./assets/javascript/services/previ.js"></script>
+<script type="module" src="./assets/javascript/components/previ.js"></script>
+<script type="module">
+    import {getProducts} from "./assets/javascript/services/previ.js"
     import {updateTypeSelect} from "./assets/javascript/components/previ.js";
     document.addEventListener("DOMContentLoaded" , async () => {
         const addRow = document.querySelector("#addRowButton")
@@ -89,7 +94,11 @@
         addRow.addEventListener("click", () => {
             let maxId = 1
             if(productTbody.querySelector("tr:last-child")) {
-                maxId = parseInt(productTbody.querySelector("tr:last-child").getAttribute("data-id"))+1
+                maxId = parseInt(productTbody.querySelector("tr:last-child").getAttribute("data-id")
+        addRow.addEventListener("click", () => {
+            let maxId = 1
+            if(productTbody.querySelector("tr:last-child")) {
+                maxId = productTbody.querySelector("tr:last-child").getAttribute("data-id")
             }
             const tr = document.createElement("tr")
             tr.setAttribute("data-id", maxId)
@@ -147,7 +156,6 @@
                 const trToRemove = e.target.closest("tr")
                 trToRemove.remove()
             })
-
             diversTbody.appendChild(tr)
         })
 
@@ -258,5 +266,7 @@
             };
             input.click();
         });
+            diversTbody.appendChild(tr)
+        })
     })
 </script>
