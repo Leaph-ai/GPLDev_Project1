@@ -69,13 +69,7 @@
 <script type="module" src="./assets/javascript/services/previ.js"></script>
 <script type="module" src="./assets/javascript/components/previ.js"></script>
 <script type="module">
-    import {getProducts, generatePDF} from "./assets/javascript/services/previ.js"
-        </div>
-    </section>
-</div>
-<script type="module" src="./assets/javascript/services/previ.js"></script>
-<script type="module" src="./assets/javascript/components/previ.js"></script>
-<script type="module">
+    import { generatePDF } from './assets/javascript/services/previ.js';
     import {getProducts} from "./assets/javascript/services/previ.js"
     import {updateTypeSelect} from "./assets/javascript/components/previ.js";
     document.addEventListener("DOMContentLoaded" , async () => {
@@ -90,11 +84,6 @@
         generatePdfButton.addEventListener("click", () => {
             generatePDF()
         })
-
-        addRow.addEventListener("click", () => {
-            let maxId = 1
-            if(productTbody.querySelector("tr:last-child")) {
-                maxId = parseInt(productTbody.querySelector("tr:last-child").getAttribute("data-id")
         addRow.addEventListener("click", () => {
             let maxId = 1
             if(productTbody.querySelector("tr:last-child")) {
@@ -266,7 +255,5 @@
             };
             input.click();
         });
-            diversTbody.appendChild(tr)
         })
-    })
 </script>

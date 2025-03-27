@@ -4,81 +4,142 @@ export const getProducts = async () => {
     return await response.json();
 }
 
-export function generatePDF() {
+export function generatePDF(logoBase64) {
     const doc = new jspdf.jsPDF();
 
-    doc.setFontSize(18);
-    doc.text('Prévisionnel', 105, 15, { align: 'center' });
+    const primaryColor = '#007bff';
+    const secondaryColor = '#6c757d';
+    const titleFontSize = 22;
+    const headingFontSize = 16;
+    const fontSize = 12;
+    const margin = 20;
+    const lineHeight = 8;
+    const logoMaxWidth = 50;
+    const logoMaxHeight = 20;
 
-    let metadata = "";
 
-    const totalCost = document.getElementById('totalCost').value;
-    doc.setFontSize(12);
-    doc.text(`Coût Total (HT): ${totalCost}`, 20, 30);
+    doc.addImage(logoBase64, 'PNG', margin, margin, logoMaxWidth, logoMaxHeight);
 
-    let yPos = 50;
-    doc.text('Liste des produits:', 20, yPos);
-    yPos += 10;
+
+    const titleX = logoBase64 ? margin + logoMaxWidth + 10 : doc.internal.pageSize.getWidth() / 2;
+    const titleY = margin + (logoBase64 ? logoMaxHeight / 2 : 0);
+
+    doc.setFontSize(titleFontSize);
+    doc.setTextColor(primaryColor);
+    doc.text('Prévisionnel', titleX, titleY, { align: logoBase64 ? 'left' : 'center', baseline: 'middle' });
+
+    const separatorY = Math.max(margin + titleFontSize + 5, margin + logoMaxHeight + 5);
+    doc.setFillColor(primaryColor);
+    doc.rect(margin, separatorY, doc.internal.pageSize.getWidth() - 2 * margin, 1, 'F');
+
+    doc.setFontSize(headingFontSize);
+    doc.setTextColor(secondaryColor);
+    let currentY = separatorY + 15;
+    doc.text('Récapitulatif Financier', margin, currentY);
+    doc.setFillColor(secondaryColor);
+    doc.rect(margin, currentY + 2, doc.getTextWidth('Récapitulatif Financier'), 0.5, 'F');
+    currentY += lineHeight + 5;
+
+    doc.setFontSize(fontSize);
+    doc.setTextColor('#333');
+    const totalCost = parseFloat(document.getElementById('totalCost').value) || 0;
+    let totalCharges = 0;
 
     const productRows = document.querySelectorAll('#product-tbody tr');
+    productRows.forEach(row => {
+        const totalValue = parseFloat(row.querySelector('[name="total"]')?.value || 0);
+        if (!isNaN(totalValue)) {
+            totalCharges += totalValue;
+        }
+    });
+
+    let laborCost = parseFloat(document.getElementById('labor-cost').value) || 0;
+    totalCharges += laborCost;
+
+    const diversRows = document.querySelectorAll('#divers-tbody tr');
+    diversRows.forEach(row => {
+        const costValue = parseFloat(row.querySelector('.divers-cost')?.value || 0);
+        if (!isNaN(costValue)) {
+            totalCharges += costValue;
+        }
+    });
+
+    const benefit = totalCost - totalCharges;
+
+    doc.text(`Coût Total (HT): ${totalCost.toFixed(2)}`, margin, currentY);
+    currentY += lineHeight;
+    doc.text(`Charges Totales: ${totalCharges.toFixed(2)}`, margin, currentY);
+    currentY += lineHeight;
+    doc.text(`Bénéfice: ${benefit.toFixed(2)}`, margin, currentY);
+    currentY += lineHeight + 5;
+
+    doc.setFontSize(headingFontSize);
+    doc.setTextColor(secondaryColor);
+    doc.text('Détail des Produits', margin, currentY);
+    doc.setFillColor(secondaryColor);
+    doc.rect(margin, currentY + 2, doc.getTextWidth('Détail des Produits'), 0.5, 'F');
+    currentY += lineHeight + 2;
+
+    doc.setFontSize(fontSize);
+    doc.setTextColor('#333');
+
     if (productRows.length > 0) {
         productRows.forEach((row, index) => {
             try {
                 const product = row.querySelector('.select-product') ? row.querySelector('.select-product').value : 'N/A';
                 const type = row.querySelector('[name="type-option"], .type-select') ? row.querySelector('[name="type-option"], .type-select').value : 'N/A';
                 const surface = row.querySelector('[name="surface"]') ? row.querySelector('[name="surface"]').value : 'N/A';
-
                 const quantityInput = row.querySelector('[name="quantity"], .quantity');
                 const priceInput = row.querySelector('[name="unitPrice"], .price');
-
-                const totalCost = row.querySelector('[name="total"], .total').value;
-
+                const totalCostProduct = row.querySelector('[name="total"], .total').value;
                 const quantity = quantityInput ? quantityInput.value : 'N/A';
-
                 const price = priceInput ? priceInput.value : 'N/A';
 
-                doc.text(`${index + 1}. Produit: ${product}, Type: ${type}, Surface: ${surface}, Quantité: ${quantity}, Prix Unitaire: ${price}, Total: ${totalCost}`, 20, yPos);
-                yPos += 8;
+                doc.text(`${index + 1}. Produit: ${product}, Type: ${type}, Surface: ${surface}, Quantité: ${quantity}, Prix Unitaire: ${price}, Total: ${totalCostProduct}`, margin, currentY);
+                currentY += lineHeight;
 
-                if (yPos > 280) {
+                if (currentY > doc.internal.pageSize.getHeight() - margin) {
                     doc.addPage();
-                    yPos = 20;
+                    currentY = margin;
                 }
             } catch (error) {
                 console.error("Erreur lors de l'extraction des données de la ligne:", error);
-                doc.text(`${index + 1}. Erreur lors de l'extraction des données`, 20, yPos);
-                yPos += 8;
+                doc.text(`${index + 1}. Erreur lors de l'extraction des données`, margin, currentY);
+                currentY += lineHeight;
             }
         });
     } else {
-        doc.text('Aucun produit ajouté', 20, yPos);
+        doc.text('Aucun produit ajouté', margin, currentY);
+        currentY += lineHeight;
     }
+    currentY += 5;
 
     const previsionInput = document.getElementById('prevision-input').value;
-    const laborCost = document.getElementById('labor-cost').value;
+    laborCost = document.getElementById('labor-cost').value;
 
     if (previsionInput.trim() !== '' || laborCost.trim() !== '') {
-        yPos += 15;
-        if (yPos > 280) {
-            doc.addPage();
-            yPos = 20;
-        }
-        doc.text('Gestion des équipes:', 20, yPos);
-        yPos += 8;
+        doc.setFontSize(headingFontSize);
+        doc.setTextColor(secondaryColor);
+        doc.text('Gestion des Équipes', margin, currentY);
+        doc.setFillColor(secondaryColor);
+        doc.rect(margin, currentY + 2, doc.getTextWidth('Gestion des Équipes'), 0.5, 'F');
+        currentY += lineHeight + 2;
+
+        doc.setFontSize(fontSize);
+        doc.setTextColor('#333');
         if (previsionInput.trim() !== '') {
-            doc.text(`Prévision: ${previsionInput}`, 20, yPos);
-            yPos += 8;
+            doc.text(`Prévision: ${previsionInput}`, margin, currentY);
+            currentY += lineHeight;
         }
         if (laborCost.trim() !== '') {
-            doc.text(`Coût de main d'œuvre: ${laborCost}`, 20, yPos);
-            yPos += 8;
+            doc.text(`Coût de main d'œuvre: ${laborCost}`, margin, currentY);
+            currentY += lineHeight;
         }
+        currentY += 5;
     }
 
-    const diversRows = document.querySelectorAll('#divers-tbody tr');
     if (diversRows.length > 0) {
         let hasDiversData = false;
-
 
         diversRows.forEach(row => {
             const nomInput = row.querySelector('input[name="divers-name"]') || row.querySelector('.divers-name') || row.cells[0].querySelector('input');
@@ -90,15 +151,15 @@ export function generatePDF() {
         });
 
         if (hasDiversData) {
-            yPos += 15;
-            if (yPos > 280) {
-                doc.addPage();
-                yPos = 20;
-            }
+            doc.setFontSize(headingFontSize);
+            doc.setTextColor(secondaryColor);
+            doc.text('Gestion des Divers', margin, currentY);
+            doc.setFillColor(secondaryColor);
+            doc.rect(margin, currentY + 2, doc.getTextWidth('Gestion des Divers'), 0.5, 'F');
+            currentY += lineHeight + 2;
 
-            doc.text('Gestions des divers:', 20, yPos);
-            yPos += 8;
-
+            doc.setFontSize(fontSize);
+            doc.setTextColor('#333');
             diversRows.forEach((row, index) => {
                 const nomInput = row.querySelector('input.divers-name') || row.querySelector('.divers-name') || row.cells[0].querySelector('input');
                 const coutInput = row.querySelector('input.divers-cost') || row.querySelector('.divers-cost') || row.cells[1].querySelector('input');
@@ -107,22 +168,33 @@ export function generatePDF() {
                     const nom = nomInput && nomInput.value.trim() !== '' ? nomInput.value : 'N/A';
                     const cout = coutInput && coutInput.value.trim() !== '' ? coutInput.value : 'N/A';
 
-                    doc.text(`${index + 1}. Nom: ${nom}, Coût: ${cout}`, 20, yPos);
-                    yPos += 8;
+                    doc.text(`${index + 1}. Nom: ${nom}, Coût: ${cout}`, margin, currentY);
+                    currentY += lineHeight;
 
-                    if (yPos > 280) {
+                    if (currentY > doc.internal.pageSize.getHeight() - margin) {
                         doc.addPage();
-                        yPos = 20;
+                        currentY = margin;
                     }
                 }
             });
         }
     }
 
+    doc.setFillColor(primaryColor);
+    doc.rect(margin, doc.internal.pageSize.getHeight() - margin - 5, doc.internal.pageSize.getWidth() - 2 * margin, 1, 'F');
+
+    doc.setFontSize(fontSize - 2);
+    doc.setTextColor(secondaryColor);
+    const generationDate = new Date().toLocaleDateString('fr-FR');
+    doc.text(`Généré le ${generationDate}`, doc.internal.pageSize.getWidth() - margin, doc.internal.pageSize.getHeight() - margin + 2, { align: 'right' });
+
+
     doc.setProperties({
         title: "Prévisionnel",
         subject: JSON.stringify({
             totalCost,
+            totalCharges,
+            benefit,
             products: Array.from(productRows).map(row => ({
                 product: row.querySelector('.select-product')?.value || 'N/A',
                 type: row.querySelector('[name="type-option"], .type-select')?.value || 'N/A',
