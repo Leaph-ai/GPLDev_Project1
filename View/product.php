@@ -1,6 +1,6 @@
 <div class="container">
     <form method="post" id="productForm">
-        <label for="select-option">Choisissez une option :</label>
+        <h3><?php echo $_GET['action'] === 'edit' ? 'Modifier un produit '.$_GET['id'] : 'Créer un produit'; ?></h3>
         <select id="select-option" name="product-option" required>
             <option value="" disabled selected>Choisissez un matériel</option>
             <option value="Enduit" <?php echo(isset($productInfos) && $productInfos['product'] === "Enduit" ? "selected" : ""); ?>>Enduit</option>

@@ -1,7 +1,7 @@
 <div class="container">
     <h1>Gestion des produits</h1>
     <a href="index.php?component=product&action=create">
-        <button class="button">Créer un produit</button>
+        <button class="button">+ Créer un produit</button>
     </a>
 
     <table>

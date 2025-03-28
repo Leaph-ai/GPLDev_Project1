@@ -1,7 +1,7 @@
 <div class="container">
     <h1>Gestion des utilisateurs</h1>
     <a href="index.php?component=user&action=create">
-        <button class="button">Créer un utilisateur</button>
+        <button class="button">+ Créer un utilisateur</button>
     </a>
 
     <table>

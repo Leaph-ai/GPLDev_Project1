@@ -9,7 +9,7 @@
         <label for="totalCost">Coût Total (HT)</label>
         <br>
         <input type="date" name="limit_date" id="limit_date" class="input-field">
-        <label for="limit_date">Date de validité</label>
+        <label for="limit_date">Date de validité du devis</label>
     </div>
     <section>
         <div class="section-header">
@@ -21,11 +21,11 @@
             <tr>
                 <th>Produit</th>
                 <th>Type</th>
-                <th>Surface</th>
+                <th>Surface m²</th>
                 <th>Quantité</th>
-                <th>Prix Unitaire</th>
-                <th>Total</th>
-                <th>Actions</th>
+                <th>Prix Unitaire €</th>
+                <th>Total €</th>
+                <th>Action</th>
             </tr>
             </thead>
             <tbody id="product-tbody">
@@ -41,8 +41,8 @@
                 <thead>
                 <tr>
                     <th>Nom</th>
-                    <th>Coût</th>
-                    <th>Actions</th>
+                    <th>Coût €</th>
+                    <th>Action</th>
                 </tr>
                 </thead>
                 <tbody id="divers-tbody">
@@ -54,10 +54,9 @@
             <h2>Gestion des équipes</h2>
         </div>
         <div class="section-content">
-            <label for="prevision-input"></label>
             <input id="prevision-input" class="input-field" type="text" placeholder="Saisissez le nombre d'équipes">
-            <label for="labor-cost"></label>
             <input id="labor-cost" class="input-field" type="text" placeholder="Saisissez le coût de la main d'oeuvre">
+            <label for="labor-cost">€</label>
         </div>
     </section>
     <div class="section section-footer">
