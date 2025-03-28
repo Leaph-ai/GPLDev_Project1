@@ -1,7 +1,8 @@
 <div class="container">
     <form method="post" id="productForm">
         <label for="select-option">Choisissez une option :</label>
-        <select id="select-option" name="product-option">
+        <select id="select-option" name="product-option" required>
+            <option value="" disabled selected>Choisissez un matériel</option>
             <option value="Enduit" <?php echo(isset($productInfos) && $productInfos['product'] === "Enduit" ? "selected" : ""); ?>>Enduit</option>
             <option value="Peinture" <?php echo(isset($productInfos) && $productInfos['product'] === "Peinture" ? "selected" : ""); ?>>Peinture</option>
             <option value="ITE" <?php echo(isset($productInfos) && $productInfos['product'] === "ITE" ? "selected" : ""); ?>>ITE</option>
