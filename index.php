@@ -6,7 +6,6 @@ $dotenv->safeLoad();
 require "Includes/database.php";
 require "Includes/functions.php";
 
-// Gérer la déconnexion
 if (isset($_GET['disconnect']) && $_GET['disconnect'] == 'true') {
     $_SESSION = array();
     session_destroy();
@@ -42,18 +41,27 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) &&
         require "_partials/navbar.php";
         if (isset($_GET['component'])) {
             $componentName = cleanString($_GET['component']);
-            if (file_exists("Controller/$componentName.php")) {
-                require "Controller/$componentName.php";
+
+            $canAccess = false;
+
+            if ($_SESSION['admin']) {
+                $canAccess = true;
+            } else if ($componentName === 'previ') {
+                $canAccess = true;
             }
-        }
-        else {
+
+            if ($canAccess && file_exists("Controller/$componentName.php")) {
+                require "Controller/$componentName.php";
+            } else {
+                require "Controller/previ.php";
+            }
+        } else {
             require "Controller/previ.php";
         }
     } else {
         require 'Controller/login.php';
     }
 
-    require "_partials/errors.php";
     ?>
 </div>
 </body>
