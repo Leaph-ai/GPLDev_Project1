@@ -63,7 +63,7 @@ body.login-page {
 }
 
 .login-button:hover {
-    background-color: #fff100;
+    background-color: #ffcc00;
 }
 
 
@@ -254,7 +254,7 @@ th {
     padding: 12px 25px;
 }
 #generatePdfButton:hover {
-    background-color: yellow;
+    background-color: #ffcc00;
 }
 
 
